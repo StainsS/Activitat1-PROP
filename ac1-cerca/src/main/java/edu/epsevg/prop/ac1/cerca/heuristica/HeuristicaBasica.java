@@ -16,13 +16,18 @@ public class HeuristicaBasica implements Heuristica {
 
 
     public HeuristicaBasica() {
-        //@TODO: implementar
+        
     }
 
     @Override
     public int h(Mapa estat) {
-        //@TODO: implementar
-        return 0;
+        int sum = 0;
+        List<Posicio> agents = estat.getAgents();
+        List<Posicio> sortides = estat.getSortides();
+        for(int i = 0;i < agents.size();i++){
+           sum += (agents.get(i).x - sortides.get(i).x) + (agents.get(i).y - sortides.get(i).y);
+        }
+        return sum;
     }
 
     

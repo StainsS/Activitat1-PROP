@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.util.ArrayDeque;
 import java.util.Arrays;
+import java.util.Objects;
 
 /**
  * Implementació concreta de {@link MapaBase}. Aquí és on cal decidir quan dos estats
@@ -30,14 +31,27 @@ public class Mapa extends MapaBase {
 
     @Override
     public boolean equals(Object o) {
-        //@TODO: implementar
-        return false;
+        boolean res = false;
+        if(this == o){
+            res = true;
+        }
+        else if(o != null || getClass() == o.getClass()){
+            Mapa other = (Mapa) o;
+            res = Arrays.deepEquals(grid, other.grid) && (n == other.n)
+                    && (m == other.m)
+                    && agents.equals(other.agents);
+        }
+        return res;
     }
 
     @Override
     public int hashCode() {
-        //@TODO: implementar
-        return 0;
+        int result = Objects.hash(n,m);
+        result = 31 * result + Arrays.deepHashCode(grid);
+        for (Posicio p : agents) {
+            result = 31 * result + (p == null ? 0 : 31 * p.x + p.y);
+        }
+        return result;
     }
 
     /**
@@ -52,5 +66,13 @@ public class Mapa extends MapaBase {
     public int[][] distancesFrom(Posicio src) {
         //@TODO: implementar
         return null;
+    }
+    
+    public boolean isSolution() { 
+        boolean resultat = true;
+        for(Posicio p : agents){
+            if (p != null) resultat = false;
+        }
+        return resultat;
     }
 }
