@@ -1,7 +1,11 @@
 package edu.epsevg.prop.ac1.cerca;
 
 import edu.epsevg.prop.ac1.cerca.model.Mapa;
+import edu.epsevg.prop.ac1.model.Moviment;
 import edu.epsevg.prop.ac1.resultat.ResultatCerca;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 /**
  * Contracte comú de tots els algorismes de cerca. {@code usarLNT} indica si l'algorisme
@@ -35,4 +39,22 @@ public abstract class Cerca {
      * @return el nom de la cerca.
      */
     public abstract String getNomCerca();
+    
+    
+    public List<Moviment> reconstruir(Node fi) {       
+        List<Moviment> cami = new ArrayList<>();
+        Node aux = fi;
+        while(aux.pare != null){
+            cami.add(aux.accio);
+            aux = aux.pare;
+        }
+        Collections.reverse(cami);
+        return cami;
+    }
+    public boolean repetitEnBranca(Node pare, Mapa estat) {
+        for (Node n = pare; n != null; n = n.pare) {
+            if (n.estat.equals(estat)) return true;
+        }
+        return false;
+    }
 }

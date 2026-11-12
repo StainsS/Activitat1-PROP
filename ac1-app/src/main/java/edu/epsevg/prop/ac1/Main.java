@@ -53,8 +53,19 @@ public class Main {
         
         // Feu les crides que us semblin oportunes, p.ex:
         //===================================================================
-        //executarIRecopilarResultats(  new CercaBFS(true), m, csv);
-        //executarIRecopilarResultats(  new CercaDFS(false),m, csv);
+        executarIRecopilarResultats(  new CercaBFS(true), m, csv);
+        executarIRecopilarResultats(  new CercaDFS(false),m, csv);
+        executarIRecopilarResultats(  new CercaDFS(true),m, csv);
+        
+        m = maps.get(1); // Carrega el primer mapa
+
+        executarIRecopilarResultats(new CercaBFS(false), m, csv);
+        
+        // Feu les crides que us semblin oportunes, p.ex:
+        //===================================================================
+        executarIRecopilarResultats(  new CercaBFS(true), m, csv);
+        executarIRecopilarResultats(  new CercaDFS(false),m, csv);
+        executarIRecopilarResultats(  new CercaDFS(true),m, csv);
         //  ...
         //executarIRecopilarResultats(  new CercaAStar(usarLNT, new HeuristicaAvancada()), m, csv);
 

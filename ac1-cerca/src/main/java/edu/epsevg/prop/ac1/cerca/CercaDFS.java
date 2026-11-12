@@ -13,9 +13,46 @@ public class CercaDFS extends Cerca {
 
     @Override
     public void ferCerca(Mapa inicial, ResultatCerca rc) {
-         //@TODO: implementar
+        Set<Mapa> LNT = new HashSet<>();
+        Deque<Node> LNO = new ArrayDeque<>();
+
+        LNO.push(new Node(inicial, null, null, 0, 0));
+        if (usarLNT) LNT.add(inicial);
+
+        int profActual = 0;
+
+        while (!LNO.isEmpty()) {
+            Node actual = LNO.pop();
+            rc.incNodesExplorats();
+            
+            if (actual.depth > profActual) {
+                profActual = actual.depth;
+                rc.actualitzaProfunditat(profActual);
+            }
+
+            if (actual.estat.esFinalPartida()) {
+                rc.setSolucio(reconstruir(actual));
+                rc.updateMemoria(LNO.size(), LNT.size());
+                return;
+            }
+            if(actual.depth <= LIMIT_PER_DEFECTE){
+                for (Moviment mov : actual.estat.getAccionsPossibles()) {
+                    Mapa fill = (Mapa) actual.estat.mou(mov);
+
+                    boolean repetit = usarLNT
+                            ? !LNT.add(fill)                  
+                            : repetitEnBranca(actual, fill);
+
+                    if (repetit) {
+                        rc.incNodesTallats();
+                    } else {
+                        LNO.push(new Node(fill, actual, mov, actual.depth + 1,actual.g+1));
+                    }
+                }
+            }
+            rc.updateMemoria(LNO.size(), LNT.size());
     }
-    
+}
     /**
      * Torna el nom de la cerca.
      * @return el nom de la cerca.

@@ -64,15 +64,27 @@ public class Mapa extends MapaBase {
      */
     @Override
     public int[][] distancesFrom(Posicio src) {
-        //@TODO: implementar
-        return null;
-    }
-    
-    public boolean isSolution() { 
-        boolean resultat = true;
-        for(Posicio p : agents){
-            if (p != null) resultat = false;
+        int[][] dist = new int[n][m];
+        for (int[] fila : dist) {
+            Arrays.fill(fila, INF);
         }
-        return resultat;
-    }
+        dist[src.x][src.y] = 0;
+        ArrayDeque<Posicio> cua = new ArrayDeque<>();
+        cua.add(src);
+        
+        while(!cua.isEmpty()){
+            Posicio actual = cua.poll();
+            for(Direccio d: Direccio.values()){
+                Posicio act_mov = actual.translate(d);
+                if((getCella(act_mov) != PARET) && 
+                        (dist[act_mov.x][act_mov.y] == INF) 
+                        && (!agents.contains(act_mov))){
+                    dist[act_mov.x][act_mov.y] = dist[actual.x][actual.y] + 1;
+                    cua.add(act_mov);
+                }
+            }
+        }
+
+        return dist;
+    }   
 }

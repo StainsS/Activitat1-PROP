@@ -48,28 +48,13 @@ public class CercaBFS extends Cerca {
                 if (repetit) {
                     rc.incNodesTallats();
                 } else {
-                    LNO.add(new Node(fill, actual, mov, actual.depth + 1,actual.pare.g+1));
+                    LNO.add(new Node(fill, actual, mov, actual.depth + 1,actual.g+1));
                 }
             }
-            rc.updateMemoria(LNO.size(), LNO.size());
+            rc.updateMemoria(LNO.size(), LNT.size());
         }
     }
-    private List<Moviment> reconstruir(Node fi) {       
-        List<Moviment> cami = new ArrayList<>();
-        Node aux = fi;
-        while(aux.pare != null){
-            cami.add(aux.accio);
-            aux = aux.pare;
-        }
-        Collections.reverse(cami);
-        return cami;
-    }
-    private boolean repetitEnBranca(Node pare, Mapa estat) {
-        for (Node n = pare; n != null; n = n.pare) {
-            if (n.estat.equals(estat)) return true;
-        }
-        return false;
-    }
+    
     /**
      * Torna el nom de la cerca.
      * @return el nom de la cerca.
