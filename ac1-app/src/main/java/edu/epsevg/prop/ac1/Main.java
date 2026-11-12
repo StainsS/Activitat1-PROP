@@ -56,6 +56,8 @@ public class Main {
         executarIRecopilarResultats(  new CercaBFS(true), m, csv);
         executarIRecopilarResultats(  new CercaDFS(false),m, csv);
         executarIRecopilarResultats(  new CercaDFS(true),m, csv);
+        executarIRecopilarResultats(  new CercaIDS(true), m, csv);
+        executarIRecopilarResultats(  new CercaIDS(false), m, csv);
         
         m = maps.get(1); // Carrega el primer mapa
 
@@ -66,6 +68,8 @@ public class Main {
         executarIRecopilarResultats(  new CercaBFS(true), m, csv);
         executarIRecopilarResultats(  new CercaDFS(false),m, csv);
         executarIRecopilarResultats(  new CercaDFS(true),m, csv);
+        executarIRecopilarResultats(  new CercaIDS(true), m, csv);
+        executarIRecopilarResultats(  new CercaIDS(false), m, csv);
         //  ...
         //executarIRecopilarResultats(  new CercaAStar(usarLNT, new HeuristicaAvancada()), m, csv);
 
