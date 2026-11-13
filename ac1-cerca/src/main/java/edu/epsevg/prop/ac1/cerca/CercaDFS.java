@@ -7,52 +7,74 @@ import edu.epsevg.prop.ac1.resultat.ResultatCerca;
 import java.util.*;
 
 public class CercaDFS extends Cerca {
-    private static final int LIMIT_PER_DEFECTE = 50;
+
+    protected enum Resultat {TROBAT, TALLAT_PER_LIMIT, ESGOTAT}
+
+    private static final int LIMIT = 50;
 
     public CercaDFS(boolean usarLNT) { super(usarLNT); }
 
     @Override
     public void ferCerca(Mapa inicial, ResultatCerca rc) {
+        dfsLimitat(inicial, rc, LIMIT);
+    }
+
+    protected Resultat dfsLimitat(Mapa inicial, ResultatCerca rc, int limit)
+    {
         Set<Mapa> LNT = new HashSet<>();
         Deque<Node> LNO = new ArrayDeque<>();
 
-        LNO.push(new Node(inicial, null, null, 0, 0));
+        LNO.push(new Node (inicial, null, null, 0, 0));
         if (usarLNT) LNT.add(inicial);
 
-        int profActual = 0;
+        boolean limitTallat = false;
 
-        while (!LNO.isEmpty()) {
+        while (!LNO.isEmpty())
+        {
             Node actual = LNO.pop();
             rc.incNodesExplorats();
-            
-            if (actual.depth > profActual) {
-                profActual = actual.depth;
-                rc.actualitzaProfunditat(profActual);
-            }
+            rc.actualitzaProfunditat(actual.depth);
 
-            if (actual.estat.esFinalPartida()) {
+            if (actual.estat.esFinalPartida())
+            {
                 rc.setSolucio(reconstruir(actual));
                 rc.updateMemoria(LNO.size(), LNT.size());
-                return;
+                return Resultat.TROBAT;
             }
-            if(actual.depth <= LIMIT_PER_DEFECTE){
-                for (Moviment mov : actual.estat.getAccionsPossibles()) {
+            
+            if (actual.depth < limit)
+            {
+                for (Moviment mov : actual.estat.getAccionsPossibles())
+                {
                     Mapa fill = (Mapa) actual.estat.mou(mov);
 
-                    boolean repetit = usarLNT
-                            ? !LNT.add(fill)                  
-                            : repetitEnBranca(actual, fill);
+                    boolean repetit;
+                    if (usarLNT) {
+                        repetit = !LNT.add(fill);
+                    } else {
+                        repetit = repetitEnBranca(actual, fill);
+                    }
 
                     if (repetit) {
                         rc.incNodesTallats();
                     } else {
-                        LNO.push(new Node(fill, actual, mov, actual.depth + 1,actual.g+1));
+                        LNO.push(new Node (fill, actual, mov, actual.depth + 1, actual.g + 1));
                     }
                 }
+            } else if (!actual.estat.getAccionsPossibles().isEmpty()) {
+                limitTallat = true;
             }
+
             rc.updateMemoria(LNO.size(), LNT.size());
+        }
+
+        if (limitTallat) {
+            return Resultat.TALLAT_PER_LIMIT;
+        } else {
+            return Resultat.ESGOTAT;
+        }
     }
-}
+
     /**
      * Torna el nom de la cerca.
      * @return el nom de la cerca.
