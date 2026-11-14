@@ -8,7 +8,7 @@ import java.util.*;
 
 public class CercaDFS extends Cerca {
 
-    protected enum Resultat {TROBAT, TALLAT_PER_LIMIT, ESGOTAT}
+    protected enum Resultat {TROBAT, TALLAT_PER_LIMIT, ESGOTAT, TEMPS_EXHAURIT}
 
     private static final int LIMIT = 50;
 
@@ -16,21 +16,27 @@ public class CercaDFS extends Cerca {
 
     @Override
     public void ferCerca(Mapa inicial, ResultatCerca rc) {
-        dfsLimitat(inicial, rc, LIMIT);
+        dfsLimitat(inicial, rc, LIMIT, System.currentTimeMillis());
     }
 
-    protected Resultat dfsLimitat(Mapa inicial, ResultatCerca rc, int limit)
+    protected Resultat dfsLimitat(Mapa inicial, ResultatCerca rc, int limit, long tempsInici)
     {
         Set<Mapa> LNT = new HashSet<>();
         Deque<Node> LNO = new ArrayDeque<>();
 
-        LNO.push(new Node (inicial, null, null, 0, 0));
+        LNO.push(new Node(inicial, null, null, 0, 0));
         if (usarLNT) LNT.add(inicial);
 
         boolean limitTallat = false;
 
         while (!LNO.isEmpty())
         {
+            if (tempsExcedit(tempsInici))
+            {
+                rc.updateMemoria(LNO.size(), LNT.size());
+                return Resultat.TEMPS_EXHAURIT;
+            }
+
             Node actual = LNO.pop();
             rc.incNodesExplorats();
             rc.actualitzaProfunditat(actual.depth);
@@ -47,15 +53,8 @@ public class CercaDFS extends Cerca {
                 for (Moviment mov : actual.estat.getAccionsPossibles())
                 {
                     Mapa fill = (Mapa) actual.estat.mou(mov);
-
-                    boolean repetit;
-                    if (usarLNT) {
-                        repetit = !LNT.add(fill);
-                    } else {
-                        repetit = repetitEnBranca(actual, fill);
-                    }
-
-                    if (repetit) {
+                    
+                    if (esRepetit(LNT, actual, fill)) {
                         rc.incNodesTallats();
                     } else {
                         LNO.push(new Node (fill, actual, mov, actual.depth + 1, actual.g + 1));

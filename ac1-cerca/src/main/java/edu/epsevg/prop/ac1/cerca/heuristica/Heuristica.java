@@ -6,6 +6,9 @@ import edu.epsevg.prop.ac1.cerca.model.Mapa;
  * Interfície per totes les heurístiques
  */
 public interface Heuristica {
+
+    int INFINIT = Integer.MAX_VALUE / 4;
+
     /**
      * Retorna el valor heurístic que li correspon al mapa
      * @param estat és el mapa que volem avaluar

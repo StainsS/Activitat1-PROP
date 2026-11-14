@@ -18,6 +18,7 @@ import edu.epsevg.prop.ac1.resultat.ResultatCerca;
 import edu.epsevg.prop.ac1.utils.CsvWriter;
 import edu.epsevg.prop.ac1.cerca.*;
 import edu.epsevg.prop.ac1.cerca.heuristica.HeuristicaAvancada;
+import edu.epsevg.prop.ac1.cerca.heuristica.HeuristicaBasica;
 
 
 public class Main {
@@ -42,12 +43,12 @@ public class Main {
         // Maps conté tots els mapes per ordre alfabètic
         final List<Mapa> maps = loadMaps(new File(DIR_MAPES));
 
-        boolean usarLNT = true;
+        //boolean usarLNT = true;
 
         List<String[]> csv = new ArrayList<>();
         csv.add(CSV_HEADER);
 
-        Mapa m = maps.get(0); // Carrega el primer mapa
+        /*Mapa m = maps.get(0); // Carrega el primer mapa
 
         executarIRecopilarResultats(new CercaBFS(false), m, csv);
         
@@ -58,6 +59,10 @@ public class Main {
         executarIRecopilarResultats(  new CercaDFS(true),m, csv);
         executarIRecopilarResultats(  new CercaIDS(true), m, csv);
         executarIRecopilarResultats(  new CercaIDS(false), m, csv);
+        executarIRecopilarResultats(  new CercaAStar(true, new HeuristicaBasica()), m, csv);
+        executarIRecopilarResultats(  new CercaAStar(false, new HeuristicaBasica()), m, csv);
+        executarIRecopilarResultats(  new CercaAStar(true, new HeuristicaAvancada()), m, csv);
+        executarIRecopilarResultats(  new CercaAStar(false, new HeuristicaAvancada()), m, csv);
         
         m = maps.get(1); // Carrega el primer mapa
 
@@ -70,8 +75,30 @@ public class Main {
         executarIRecopilarResultats(  new CercaDFS(true),m, csv);
         executarIRecopilarResultats(  new CercaIDS(true), m, csv);
         executarIRecopilarResultats(  new CercaIDS(false), m, csv);
+        executarIRecopilarResultats(  new CercaAStar(true, new HeuristicaBasica()), m, csv);
+        executarIRecopilarResultats(  new CercaAStar(false, new HeuristicaBasica()), m, csv);
+        executarIRecopilarResultats(  new CercaAStar(true, new HeuristicaAvancada()), m, csv);
+        executarIRecopilarResultats(  new CercaAStar(false, new HeuristicaAvancada()), m, csv);*/
         //  ...
         //executarIRecopilarResultats(  new CercaAStar(usarLNT, new HeuristicaAvancada()), m, csv);
+
+        for (int i = 0; i < maps.size(); ++i)
+        {
+            Mapa m = maps.get(i); // Carrega el primer mapa
+            executarIRecopilarResultats(new CercaBFS(false), m, csv);
+            
+            // Feu les crides que us semblin oportunes, p.ex:
+            //===================================================================
+            executarIRecopilarResultats(  new CercaBFS(true), m, csv);
+            executarIRecopilarResultats(  new CercaDFS(false),m, csv);
+            executarIRecopilarResultats(  new CercaDFS(true),m, csv);
+            executarIRecopilarResultats(  new CercaIDS(true), m, csv);
+            executarIRecopilarResultats(  new CercaIDS(false), m, csv);
+            executarIRecopilarResultats(  new CercaAStar(true, new HeuristicaBasica()), m, csv);
+            executarIRecopilarResultats(  new CercaAStar(false, new HeuristicaBasica()), m, csv);
+            executarIRecopilarResultats(  new CercaAStar(true, new HeuristicaAvancada()), m, csv);
+            executarIRecopilarResultats(  new CercaAStar(false, new HeuristicaAvancada()), m, csv);
+        }
 
         // Escrivim els resultats
         CsvWriter cw = new CsvWriter(RESULTS_FILE);
@@ -129,6 +156,8 @@ public class Main {
         String className = c.getClass().getName();
         className = className.substring(className.lastIndexOf('.') + 1);
 
+        System.gc();
+
         System.out.println("Executant " + className + " sobre " + map.name());
 
         ResultatCerca r = new ResultatCerca();
@@ -155,6 +184,11 @@ public class Main {
         }
 
         r.stopTime(); // Aturar el temporitzador
+
+        // Si no hay solución, no ha saltado ninguna excepción y ha tardado >= 120 s: timeout
+        if (r.getSolucio() == null && error.isEmpty() && r.getTempsMs() >= 120_000) {
+            error = "TIMEOUT 120s";
+        }
 
         // Comprova que el camí retornat sigui realment una solució (fora del temps mesurat).
         String valida = ValidadorSolucio.valida(map, r.getSolucio());

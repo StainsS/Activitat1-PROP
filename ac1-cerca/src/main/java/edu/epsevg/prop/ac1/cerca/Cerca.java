@@ -6,6 +6,7 @@ import edu.epsevg.prop.ac1.resultat.ResultatCerca;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Contracte comú de tots els algorismes de cerca. {@code usarLNT} indica si l'algorisme
@@ -15,6 +16,7 @@ import java.util.List;
  */
 public abstract class Cerca {
     protected final boolean usarLNT;
+    protected static final long TEMPS_MAXIM_MS = 120_000L;
 
     public Cerca(boolean usarLNT) {
         this.usarLNT = usarLNT;
@@ -26,6 +28,12 @@ public abstract class Cerca {
      */
     public boolean usesLNT(){
         return this.usarLNT;
+    }
+    
+    protected boolean tempsExcedit(long tempsInici) 
+    {
+        return (System.currentTimeMillis() - tempsInici > TEMPS_MAXIM_MS)
+                || Thread.currentThread().isInterrupted();
     }
 
     /**
@@ -56,5 +64,18 @@ public abstract class Cerca {
             if (n.estat.equals(estat)) return true;
         }
         return false;
+    }
+
+    /**
+     * Retorna true si l'estat fill és repetit. Amb LNT, a més, el registra
+     * (Set.add retorna false si ja hi era); sense LNT, el busca a la branca actual.
+     */
+    protected boolean esRepetit(Set<Mapa> LNT, Node pare, Mapa fill) 
+    {
+        if (usarLNT) {
+            return !LNT.add(fill);
+        } else {
+            return repetitEnBranca(pare, fill);
+        }
     }
 }

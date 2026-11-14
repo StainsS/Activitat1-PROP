@@ -1,10 +1,7 @@
 package edu.epsevg.prop.ac1.cerca;
 
-import edu.epsevg.prop.ac1.cerca.CercaDFS.Resultat;
 import edu.epsevg.prop.ac1.cerca.model.Mapa;
 import edu.epsevg.prop.ac1.resultat.ResultatCerca;
-import edu.epsevg.prop.ac1.model.Moviment;
-import java.util.*;
 
 public class CercaIDS extends CercaDFS {
 
@@ -15,9 +12,10 @@ public class CercaIDS extends CercaDFS {
 
     @Override
     public void ferCerca(Mapa inicial, ResultatCerca rc) {
+        long tempsInici = System.currentTimeMillis();
         for (int limit = 0; ; ++limit)
         {
-            Resultat r = dfsLimitat(inicial, rc, limit);
+            Resultat r = dfsLimitat(inicial, rc, limit, tempsInici);
             if (r != Resultat.TALLAT_PER_LIMIT)
             {
                 return;

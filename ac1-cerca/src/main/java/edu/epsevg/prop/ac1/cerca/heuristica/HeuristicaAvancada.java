@@ -14,14 +14,26 @@ public class HeuristicaAvancada implements Heuristica {
     
   
     public HeuristicaAvancada() {
-        //@TODO: implementar       
+        //@TODO: implementar    
     }
 
     
     @Override
     public int h(Mapa estat) {
-        //@TODO: implementar
-        return 0;
+        List<Posicio> agents = estat.getAgents();
+        List<Posicio> sortides = estat.getSortides();
+        int suma = 0;
+        for (int i = 0; i < agents.size(); ++i)
+        {
+            Posicio a = agents.get(i);
+            if (a == null) continue;
+            Posicio s = sortides.get(i);
+            int d = estat.distancesFrom(a)[s.x][s.y];
+            if (d >= INFINIT) return INFINIT;
+
+            suma += d;
+        }
+        return suma;
     }
     
     @Override

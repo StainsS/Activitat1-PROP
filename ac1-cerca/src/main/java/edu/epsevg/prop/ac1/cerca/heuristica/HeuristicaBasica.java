@@ -24,8 +24,12 @@ public class HeuristicaBasica implements Heuristica {
         int sum = 0;
         List<Posicio> agents = estat.getAgents();
         List<Posicio> sortides = estat.getSortides();
-        for(int i = 0;i < agents.size();i++){
-           sum += (agents.get(i).x - sortides.get(i).x) + (agents.get(i).y - sortides.get(i).y);
+        for(int i = 0; i < agents.size(); i++) 
+        {
+            Posicio a = agents.get(i);
+            if (a == null) continue;
+            Posicio s = sortides.get(i);
+            sum += Math.abs(a.x - s.x) + Math.abs(a.y - s.y);
         }
         return sum;
     }

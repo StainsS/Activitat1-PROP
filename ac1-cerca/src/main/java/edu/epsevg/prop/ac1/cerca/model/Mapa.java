@@ -35,7 +35,7 @@ public class Mapa extends MapaBase {
         if(this == o){
             res = true;
         }
-        else if(o != null || getClass() == o.getClass()){
+        else if(o != null && getClass() == o.getClass()){
             Mapa other = (Mapa) o;
             res = Arrays.deepEquals(grid, other.grid) && (n == other.n)
                     && (m == other.m)
@@ -76,15 +76,16 @@ public class Mapa extends MapaBase {
             Posicio actual = cua.poll();
             for(Direccio d: Direccio.values()){
                 Posicio act_mov = actual.translate(d);
+                if(act_mov.x < 0 || act_mov.y < 0 || act_mov.x >= n || act_mov.y >= m) continue;
                 if((getCella(act_mov) != PARET) && 
                         (dist[act_mov.x][act_mov.y] == INF) 
                         && (!agents.contains(act_mov))){
                     dist[act_mov.x][act_mov.y] = dist[actual.x][actual.y] + 1;
-                    cua.add(act_mov);
+                    if (!getSortides().contains(act_mov)) cua.add(act_mov);
                 }
             }
         }
-
+ 
         return dist;
     }   
 }
