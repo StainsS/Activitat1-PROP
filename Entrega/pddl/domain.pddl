@@ -1,0 +1,52 @@
+(define (domain multi-snake)
+    (:requirements :strips :equality :typing)
+    (:types TCASELLA TAGENT TSORTIDA)
+    (:predicates
+		(EstaPlena ?agent - TAGENT ?casella - TCASELLA)
+		(EstaBuida ?casella - TCASELLA)
+		(Veina ?casella ?casella - TCASELLA)
+		(EsSortida ?sortida - TSORTIDA ?agent -TAGENT ?casella - TCASELLA)
+		(EsParet ?casella - TCASELLA)
+		(HaSortit ?agent - TAGENT)
+    )
+(:action Moure
+        :parameters (?agent - TAGENT ?sortida - TSORTIDA ?deCasella ?aCasella - TCASELLA)
+        :precondition (and 
+							(EstaBuida ?aCasella)
+							(not(EsParet ?aCasella))
+							(not(EsSortida ?sortida ?agent ?aCasella))
+							(not(HaSortit ?agent))
+							(EstaPlena ?agent ?deCasella) 
+							(or 
+								(Veina ?aCasella ?deCasella)
+								(Veina ?deCasella ?aCasella)
+							) 
+					)
+        :effect (and 
+            (EsParet ?deCasella)			
+            (EstaPlena ?agent ?aCasella)
+			(not (EstaPlena ?agent ?deCasella))
+			(not (EstaBuida ?aCasella))
+         )
+    )
+(:action Sortir
+        :parameters (?agent - TAGENT ?sortida -TSORTIDA ?deCasella ?aCasella - TCASELLA)
+        :precondition (and 
+							(EsSortida ?sortida ?agent ?aCasella)
+							(not(EsParet ?aCasella))
+							(not(HaSortit ?agent))
+							(EstaPlena ?agent ?deCasella) 
+							(or 
+								(Veina ?aCasella ?deCasella)
+								(Veina ?deCasella ?aCasella)
+							) 
+					)
+        :effect (and 
+            (EsParet ?deCasella)			
+            (EsParet ?aCasella)	
+            (HaSortit ?agent)
+			(not (EstaPlena ?agent ?deCasella))
+			(not (EstaBuida ?aCasella))
+         )
+    )
+)
