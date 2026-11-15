@@ -98,6 +98,7 @@ public class Main {
             executarIRecopilarResultats(  new CercaAStar(false, new HeuristicaBasica()), m, csv);
             executarIRecopilarResultats(  new CercaAStar(true, new HeuristicaAvancada()), m, csv);
             executarIRecopilarResultats(  new CercaAStar(false, new HeuristicaAvancada()), m, csv);
+            executarIRecopilarResultats(  new CercaRepte(), m, csv);
         }
 
         // Escrivim els resultats
